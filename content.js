@@ -1,4 +1,4 @@
-/* תוכן האתר — נערך דרך עורך התוכן (shemi-shoham-admin).
+/* תוכן האתר — נערך דרך עורך התוכן.
    אל תשנו את שורות הסימון JSON-START / JSON-END. */
 window.CONTENT = /*JSON-START*/{
  "texts": {
@@ -252,6 +252,13 @@ window.CONTENT = /*JSON-START*/{
    "short": "אקוורלים",
    "blurb": "עבודות מים קלות ומהירות: נגנים, נופים ופרחים.",
    "cover": "watercolors/yafo.jpg"
+  },
+  {
+   "id": "gmsmwkfwb",
+   "name": "בדיקה",
+   "short": "בדיקה",
+   "blurb": "",
+   "cover": ""
   }
  ],
  "works": [
