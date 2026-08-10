@@ -1,0 +1,143 @@
+/**
+ * Catalogue data for the Abraham Shemi-Shoham site.
+ *
+ * Titles were derived from the original image filenames on color-in-nature.com —
+ * the source pages carry no captions or alt text. They are meant to be edited:
+ * change `title` here and it updates the gallery, the lightbox and the home page.
+ */
+
+const SERIES = [
+  {
+    id: 'judaica',
+    name: 'יודאיקה — כתר ארם צובא',
+    short: 'כתר ארם צובא',
+    blurb: 'ציור ואיור קטעים מן הכתר — משאת חייו של האמן וסגירת מעגל מילדותו בחלב.',
+    cover: 'judaica/jerusalem.jpg'
+  },
+  {
+    id: 'aleppo',
+    name: 'זכרונות מחלב־סוריה',
+    short: 'זכרונות מחלב',
+    blurb: 'סמטאות, חגים ופנים מן הקהילה היהודית בארם צובא, כפי שנשמרו בזיכרון הילדות.',
+    cover: 'aleppo/mekoubal.jpg'
+  },
+  {
+    id: 'song-of-songs',
+    name: 'שיר השירים',
+    short: 'שיר השירים',
+    blurb: 'סדרה שנולדה מן הפסוקים — אהבה, גנים ובשמים בצבע ובקו.',
+    cover: 'song-of-songs/nitsanim.jpg'
+  },
+  {
+    id: 'paintings',
+    name: 'ציורים',
+    short: 'ציורים',
+    blurb: 'נופי הארץ, מוסיקה וחתונה תימנית — הסדרות המרכזיות בעבודתו.',
+    cover: 'paintings/musiciene.jpg'
+  },
+  {
+    id: 'watercolors',
+    name: 'אקוורלים',
+    short: 'אקוורלים',
+    blurb: 'עבודות מים קלות ומהירות: נגנים, נופים ופרחים.',
+    cover: 'watercolors/yafo.jpg'
+  }
+];
+
+const WORKS = [
+  // ── יודאיקה — כתר ארם צובא ───────────────────────────────────────────────
+  { s: 'judaica', f: 'jerusalem.jpg',      t: 'ירושלים',              w: 378, h: 522 },
+  { s: 'judaica', f: 'y1.jpg',             t: 'מתוך הכתר',            w: 374, h: 522 },
+  { s: 'judaica', f: 'shirlamaalot.jpg',   t: 'שיר למעלות',           w: 361, h: 522 },
+  { s: 'judaica', f: 'eshethail.jpg',      t: 'אשת חיל',              w: 393, h: 522 },
+  { s: 'judaica', f: 'halelouya.jpg',      t: 'הללויה',               w: 378, h: 522 },
+  { s: 'judaica', f: 'essaenay.jpg',       t: 'אשא עיני',             w: 377, h: 522 },
+  { s: 'judaica', f: 'altira.jpg',         t: 'אל תירא',              w: 370, h: 522 },
+  { s: 'judaica', f: 'hodoulashem.jpg',    t: "הודו לה'",             w: 363, h: 522 },
+  { s: 'judaica', f: 'shebetahim.jpg',     t: 'שבת אחים',             w: 369, h: 522 },
+  { s: 'judaica', f: 'mishley.jpg',        t: 'משלי',                 w: 374, h: 522 },
+  { s: 'judaica', f: 'lamenazeah.jpg',     t: 'למנצח',                w: 368, h: 522 },
+  { s: 'judaica', f: 'birkatitshak.jpg',   t: 'ברכת יצחק',            w: 380, h: 522 },
+  { s: 'judaica', f: 'ruthblessing.jpg',   t: 'ברכת רות',             w: 384, h: 522 },
+  { s: 'judaica', f: 'welaleviamar.jpg',   t: 'וללוי אמר',            w: 380, h: 522 },
+  { s: 'judaica', f: 'leuosphamar.jpg',    t: 'וליוסף אמר',           w: 370, h: 522 },
+  { s: 'judaica', f: 'hazakveemats.jpg',   t: 'חזק ואמץ',             w: 391, h: 522 },
+  { s: 'judaica', f: 'songofsongs.jpg',    t: 'שיר השירים',           w: 380, h: 522 },
+  { s: 'judaica', f: 'aramtsobaweor.jpg',  t: 'ארם צובא',             w: 362, h: 522 },
+  { s: 'judaica', f: 'y2.jpg',             t: 'מתוך הכתר',            w: 376, h: 522 },
+
+  // ── זכרונות מחלב־סוריה ───────────────────────────────────────────────────
+  { s: 'aleppo', f: 'mekoubal.jpg',        t: 'מקובל',                w: 394, h: 522 },
+  { s: 'aleppo', f: 'pray.jpg',            t: 'תפילה',                w: 640, h: 291 },
+  { s: 'aleppo', f: 'simhattora.jpg',      t: 'שמחת תורה',            w: 293, h: 522 },
+  { s: 'aleppo', f: 'britmila.jpg',        t: 'ברית מילה',            w: 640, h: 479 },
+  { s: 'aleppo', f: 'aleppienwomens.jpg',  t: 'נשות חלב',             w: 375, h: 522 },
+  { s: 'aleppo', f: 'kawas.jpg',           t: 'קוואס',                w: 345, h: 522 },
+  { s: 'aleppo', f: 'pourim3.jpg',         t: 'פורים',                w: 577, h: 522 },
+  { s: 'aleppo', f: 'conflagration.jpg',   t: 'השרפה',                w: 404, h: 522 },
+  { s: 'aleppo', f: 'wiew1.jpg',           t: 'נוף חלב',              w: 577, h: 522 },
+  { s: 'aleppo', f: 'vision2.jpg',         t: 'חזון',                 w: 570, h: 522 },
+  { s: 'aleppo', f: 'barazek.jpg',         t: 'בראזק',                w: 376, h: 522 },
+  { s: 'aleppo', f: 'lomer.jpg',           t: 'זכרונות מחלב',         w: 293, h: 522 },
+  { s: 'aleppo', f: 'pp1.jpg',             t: 'זכרונות מחלב',         w: 640, h: 316 },
+  { s: 'aleppo', f: 'pp2.jpg',             t: 'זכרונות מחלב',         w: 574, h: 522 },
+  { s: 'aleppo', f: 'Graphic3333.jpg',     t: 'זכרונות מחלב',         w: 392, h: 522 },
+
+  // ── שיר השירים ───────────────────────────────────────────────────────────
+  { s: 'song-of-songs', f: 'nitsanim.jpg',  t: 'הנצנים נראו בארץ',    w: 380, h: 522 },
+  { s: 'song-of-songs', f: 'morlbona.jpg',  t: 'מור ולבונה',          w: 377, h: 522 },
+  { s: 'song-of-songs', f: 'ketempaz.jpg',  t: 'כתם פז',              w: 448, h: 522 },
+  { s: 'song-of-songs', f: 'tamar.jpg',     t: 'תמר',                 w: 382, h: 522 },
+  { s: 'song-of-songs', f: 'thehorse.jpg',  t: 'לססתי ברכבי פרעה',    w: 380, h: 522 },
+  { s: 'song-of-songs', f: 'pashatti.jpg',  t: 'פשטתי את כתנתי',      w: 394, h: 522 },
+  { s: 'song-of-songs', f: 'mishkabbi.jpg', t: 'על משכבי בלילות',     w: 640, h: 465 },
+  { s: 'song-of-songs', f: 's5.jpg',        t: 'מתוך שיר השירים',     w: 360, h: 522 },
+  { s: 'song-of-songs', f: 's40.jpg',       t: 'מתוך שיר השירים',     w: 363, h: 522 },
+
+  // ── ציורים ───────────────────────────────────────────────────────────────
+  { s: 'paintings', f: 'musiciene.jpg',    t: 'נגנית',                w: 373, h: 522 },
+  { s: 'paintings', f: 'gitara.jpg',       t: 'גיטרה',                w: 415, h: 522 },
+  { s: 'paintings', f: 'musicalclass.jpg', t: 'שיעור מוסיקה',         w: 640, h: 442 },
+  { s: 'paintings', f: 'kabaret.jpg',      t: 'קברט',                 w: 412, h: 522 },
+  { s: 'paintings', f: 'bar.jpg',          t: 'בר',                   w: 640, h: 510 },
+  { s: 'paintings', f: 'yemenitbride.jpg', t: 'כלה תימנייה',          w: 371, h: 522 },
+  { s: 'paintings', f: 'twogirls.jpg',     t: 'שתי נערות',            w: 408, h: 522 },
+  { s: 'paintings', f: 'girl.jpg',         t: 'נערה',                 w: 640, h: 494 },
+  { s: 'paintings', f: 'tawas.jpg',        t: 'טווסים',               w: 340, h: 522 },
+  { s: 'paintings', f: 'zafed.JPG',        t: 'צפת',                  w: 369, h: 522 },
+  { s: 'paintings', f: 'tiberias.jpg',     t: 'טבריה',                w: 640, h: 441 },
+  { s: 'paintings', f: 'einkarem.jpg',     t: 'עין כרם',              w: 640, h: 466 },
+  { s: 'paintings', f: 'deadsea2.JPG',     t: 'ים המלח',              w: 640, h: 468 },
+  { s: 'paintings', f: 'einbokek2.JPG',    t: 'עין בוקק',             w: 640, h: 480 },
+  { s: 'paintings', f: 'beitkeshet.jpg',   t: 'בית קשת',              w: 640, h: 427 },
+  { s: 'paintings', f: 'jbahura.jpg',      t: "ג'בהורה",              w: 638, h: 522 },
+  { s: 'paintings', f: 'againstthewall.jpg', t: 'אל מול החומה',       w: 640, h: 431 },
+  { s: 'paintings', f: 's0.jpg',           t: 'ללא כותרת',            w: 640, h: 414 },
+  { s: 'paintings', f: 's1.jpg',           t: 'ללא כותרת',            w: 640, h: 470 },
+  { s: 'paintings', f: 's6.jpg',           t: 'ללא כותרת',            w: 640, h: 463 },
+
+  // ── אקוורלים ─────────────────────────────────────────────────────────────
+  { s: 'watercolors', f: 'yafo.jpg',         t: 'יפו',                w: 599, h: 522 },
+  { s: 'watercolors', f: 'zafed.jpg',        t: 'צפת',                w: 369, h: 522 },
+  { s: 'watercolors', f: 'pekiin.JPG',       t: 'פקיעין',             w: 640, h: 448 },
+  { s: 'watercolors', f: 'golan.jpg',        t: 'רמת הגולן',          w: 640, h: 433 },
+  { s: 'watercolors', f: 'yarkonriver2.jpg', t: 'נחל הירקון',         w: 623, h: 522 },
+  { s: 'watercolors', f: 'river.JPG',        t: 'נחל',                w: 640, h: 461 },
+  { s: 'watercolors', f: 'betkeshet.jpg',    t: 'בית קשת',            w: 640, h: 435 },
+  { s: 'watercolors', f: 'garden.JPG',       t: 'גן',                 w: 640, h: 506 },
+  { s: 'watercolors', f: 'violent.jpg',      t: 'כנר',                w: 355, h: 522 },
+  { s: 'watercolors', f: 'musicien.JPG',     t: 'נגן',                w: 379, h: 522 },
+  { s: 'watercolors', f: 'treeplayers.JPG',  t: 'שלושה נגנים',        w: 640, h: 457 },
+  { s: 'watercolors', f: 'playergirle.jpg',  t: 'נגנית',              w: 368, h: 522 },
+  { s: 'watercolors', f: 'danser.jpg',       t: 'רקדנית',             w: 328, h: 522 },
+  { s: 'watercolors', f: 'inthebar.jpg',     t: 'בבר',                w: 640, h: 412 },
+  { s: 'watercolors', f: 'girlatbar.jpg',    t: 'נערה בבר',           w: 640, h: 498 },
+  { s: 'watercolors', f: 'cooplein_bar.JPG', t: 'זוג בבר',            w: 640, h: 439 },
+  { s: 'watercolors', f: 'yelowgirl.jpg',    t: 'נערה בצהוב',         w: 414, h: 522 },
+  { s: 'watercolors', f: 'lady.jpg',         t: 'גברת',               w: 325, h: 522 },
+  { s: 'watercolors', f: 'girle.jpg',        t: 'נערה',               w: 640, h: 437 },
+  { s: 'watercolors', f: 'flowers.jpg',      t: 'פרחים',              w: 388, h: 522 },
+  { s: 'watercolors', f: 'flower1.jpg',      t: 'פרח',                w: 344, h: 522 },
+  { s: 'watercolors', f: 'waza.jpg',         t: 'אגרטל',              w: 362, h: 522 },
+  { s: 'watercolors', f: 's8.jpg',           t: 'אקוורל',             w: 601, h: 522 }
+];
