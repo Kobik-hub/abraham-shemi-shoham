@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>הגדרת סיסמה לעורך — אברהם שמי־שהם</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+:root {
+  --bg: #f3e7d2; --surface: #faf2e3; --ink: #2b1d11; --soft: #53402b;
+  --muted: #87684a; --line: #d6bd97; --clay: #a34a2a; --clay-deep: #7c3418;
+  --ok: #5f7047; --danger: #8e2f28;
+}
+* { box-sizing: border-box; }
+html { font-size: 17px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+}
+.wrap { max-width: 640px; margin: 2.5rem auto; padding: 0 1.2rem; }
+.card {
+  background: var(--surface); border: 2px solid var(--line); border-radius: 14px;
+  padding: 1.8rem;
+}
+h1 { font-size: 1.4rem; margin: 0 0 .4rem; }
+.sub { color: var(--muted); margin: 0 0 1.4rem; }
+label { display: block; font-weight: 700; color: var(--soft); margin: 1rem 0 .25rem; }
+input {
+  width: 100%; padding: .6rem .8rem; font: inherit; color: var(--ink);
+  border: 2px solid var(--line); border-radius: 8px; background: #fff;
+}
+small { color: var(--muted); }
+details { margin-top: 1rem; }
+summary { cursor: pointer; color: var(--muted); }
+.btn {
+  margin-top: 1.4rem; width: 100%; border: 0; border-radius: 10px;
+  padding: .9rem; font: inherit; font-size: 1.1rem; font-weight: 700;
+  color: #fff; background: var(--clay); cursor: pointer;
+}
+.btn:hover { background: var(--clay-deep); }
+.btn:disabled { opacity: .5; cursor: wait; }
+.err { color: var(--danger); font-weight: 700; min-height: 1.4em; margin-top: .8rem; }
+#done { display: none; border-color: var(--ok); }
+#done.on { display: block; }
+#done h2 { color: var(--ok); margin-top: 0; }
+#done a { color: var(--clay); font-weight: 700; }
+code { background: #fff; border: 1px solid var(--line); border-radius: 5px; padding: .05em .4em; }
+.note {
+  background: #fff; border: 2px solid var(--line); border-radius: 10px;
+  padding: .9rem 1.1rem; margin-top: 1.2rem; font-size: .92rem;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card" id="form">
+    <h1>הגדרת סיסמה לעורך</h1>
+    <p class="sub">עמוד חד־פעמי למנהל האתר. המפתח יוצפן בסיסמה ויישמר במאגר —
+      ומעכשיו הכניסה לעורך תהיה עם הסיסמה בלבד.</p>
+
+    <label>מפתח הגישה (Token) מגיטהאב
+      <input type="password" id="token" dir="ltr" autocomplete="off" placeholder="ghp_... או github_pat_...">
+    </label>
+    <small>עדיף מפתח Fine-grained שמוגבל למאגר הזה בלבד, עם הרשאת Contents: Read and write.</small>
+
+    <label>בחרו סיסמה פשוטה לאמן
+      <input type="text" id="pw1" autocomplete="off" placeholder="למשל: ציור בצבע חמרה 7">
+    </label>
+    <small>לפחות 8 תווים. כמה מילים בעברית זו סיסמה מצוינת — קלה לזכירה וקשה לניחוש.</small>
+
+    <label>הסיסמה שוב
+      <input type="text" id="pw2" autocomplete="off">
+    </label>
+
+    <details>
+      <summary>הגדרות מתקדמות</summary>
+      <label>שם משתמש בגיטהאב <input type="text" id="owner" dir="ltr" value="Kobik-hub"></label>
+      <label>שם המאגר <input type="text" id="repo" dir="ltr" value="abraham-shemi-shoham"></label>
+    </details>
+
+    <button class="btn" id="go" type="button">הצפנה ושמירה</button>
+    <p class="err" id="err"></p>
+
+    <div class="note">
+      המפתח לא נשלח לשום מקום מלבד גיטהאב עצמו, והסיסמה לא נשמרת בשום מקום —
+      רק גרסה מוצפנת של המפתח נשמרת במאגר. שכחתם את הסיסמה? פשוט מריצים את העמוד הזה שוב.
+    </div>
+  </div>
+
+  <div class="card" id="done">
+    <h2>✓ הסיסמה הוגדרה</h2>
+    <p>מעכשיו נכנסים לעורך עם הסיסמה בלבד:</p>
+    <p><a href="./" id="editor-link">פתיחת העורך ←</a></p>
+    <p>כתבו לאמן את הסיסמה על פתק ליד המחשב. בכניסה הראשונה הדפדפן גם יציע לזכור אותה.</p>
+    <p><small>שימו לב: ההגדרה מתעדכנת באתר תוך דקה־שתיים (בניית GitHub Pages).</small></p>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+function $(s) { return document.querySelector(s); }
+
+function b64encBytes(bytes) {
+  var s = '';
+  for (var i = 0; i < bytes.length; i += 0x8000) {
+    s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(s);
+}
+function b64encText(str) { return b64encBytes(new TextEncoder().encode(str)); }
+
+var API_H;
+function gh(path, opts) {
+  opts = opts || {};
+  return fetch('https://api.github.com' + path, {
+    method: opts.method || 'GET',
+    headers: API_H,
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  }).then(function (r) {
+    if (!r.ok) return r.json().catch(function () { return {}; }).then(function (d) {
+      throw new Error(d.message || ('שגיאה ' + r.status));
+    });
+    return r.json();
+  });
+}
+
+function encryptPayload(payloadText, password) {
+  var salt = crypto.getRandomValues(new Uint8Array(16));
+  var iv = crypto.getRandomValues(new Uint8Array(12));
+  var ITER = 600000;
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey'])
+    .then(function (km) {
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: ITER, hash: 'SHA-256' },
+        km, { name: 'AES-GCM', length: 256 }, false, ['encrypt']);
+    })
+    .then(function (key) {
+      return crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, new TextEncoder().encode(payloadText));
+    })
+    .then(function (ct) {
+      return {
+        v: 1, kdf: 'PBKDF2-SHA256', iter: ITER,
+        salt: b64encBytes(salt), iv: b64encBytes(iv), ct: b64encBytes(new Uint8Array(ct))
+      };
+    });
+}
+
+$('#go').addEventListener('click', function () {
+  var btn = this;
+  var token = $('#token').value.trim();
+  var pw1 = $('#pw1').value;
+  var pw2 = $('#pw2').value;
+  var owner = $('#owner').value.trim();
+  var repo = $('#repo').value.trim();
+  var err = $('#err');
+  err.textContent = '';
+
+  if (!token) { err.textContent = 'חסר המפתח מגיטהאב.'; return; }
+  if (pw1.length < 8) { err.textContent = 'הסיסמה קצרה מדי — לפחות 8 תווים.'; return; }
+  if (pw1 !== pw2) { err.textContent = 'שתי הסיסמאות לא זהות.'; return; }
+
+  API_H = {
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+    'Content-Type': 'application/json'
+  };
+  var R = '/repos/' + owner + '/' + repo;
+
+  btn.disabled = true;
+  btn.textContent = 'בודק את המפתח…';
+
+  gh(R).then(function (info) {
+    if (!info.permissions || !info.permissions.push) {
+      throw new Error('למפתח הזה אין הרשאת כתיבה למאגר ' + owner + '/' + repo);
+    }
+    btn.textContent = 'מצפין…';
+    return encryptPayload(JSON.stringify({ token: token, owner: owner, repo: repo, branch: 'main' }), pw1);
+  }).then(function (blob) {
+    btn.textContent = 'שומר למאגר…';
+    var b64 = b64encText(JSON.stringify(blob, null, 1));
+    var refSha, baseTree;
+    return gh(R + '/git/ref/heads/main').then(function (ref) {
+      refSha = ref.object.sha;
+      return gh(R + '/git/commits/' + refSha);
+    }).then(function (c) {
+      baseTree = c.tree.sha;
+      return gh(R + '/git/blobs', { method: 'POST', body: { content: b64, encoding: 'base64' } });
+    }).then(function (blobObj) {
+      return gh(R + '/git/trees', {
+        method: 'POST',
+        body: { base_tree: baseTree, tree: [{ path: 'editor/secret.json', mode: '100644', type: 'blob', sha: blobObj.sha }] }
+      });
+    }).then(function (tree) {
+      return gh(R + '/git/commits', {
+        method: 'POST',
+        body: { message: 'הגדרת סיסמה לעורך', tree: tree.sha, parents: [refSha] }
+      });
+    }).then(function (commit) {
+      return gh(R + '/git/refs/heads/main', { method: 'PATCH', body: { sha: commit.sha } });
+    });
+  }).then(function () {
+    /* מחברים גם את המחשב הזה */
+    try {
+      localStorage.setItem('shemi-gh', JSON.stringify({ token: token, owner: owner, repo: repo, branch: 'main' }));
+    } catch (e) {}
+    $('#form').style.display = 'none';
+    $('#done').classList.add('on');
+  }).catch(function (e) {
+    err.textContent = e.message;
+  }).finally(function () {
+    btn.disabled = false;
+    btn.textContent = 'הצפנה ושמירה';
+  });
+});
+</script>
+</body>
+</html>

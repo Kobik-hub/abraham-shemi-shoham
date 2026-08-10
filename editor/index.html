@@ -64,6 +64,23 @@ input, textarea { font: inherit; color: var(--ink); }
 #setup .err { color: var(--danger); font-weight: 700; min-height: 1.4em; }
 #setup a { color: var(--clay); font-weight: 700; }
 
+/* ---- מסך סיסמה (לאמן) ---- */
+#pwscreen { display: none; max-width: 480px; margin: 4rem auto; padding: 0 1.2rem; text-align: center; }
+#pwscreen.on { display: block; }
+#pwscreen .card {
+  background: var(--surface); border: 2px solid var(--line); border-radius: 14px;
+  padding: 2rem 1.6rem;
+}
+#pwscreen h2 { margin: 0 0 1.2rem; font-size: 1.5rem; }
+#pwscreen input {
+  width: 100%; padding: .9rem 1rem; font-size: 1.3rem; text-align: center;
+  border: 2px solid var(--line); border-radius: 10px; background: #fff;
+}
+#pwscreen .btn { width: 100%; margin-top: 1rem; font-size: 1.2rem; padding: .9rem; }
+#pwscreen .err { color: var(--danger); font-weight: 700; min-height: 1.5em; margin-top: .8rem; }
+#pwscreen .adv { margin-top: 1.4rem; font-size: .85rem; }
+#pwscreen .adv a { color: var(--muted); text-decoration: underline; cursor: pointer; }
+
 /* ---- כרטיס גלריה ---- */
 .gal {
   background: var(--surface); border: 2px solid var(--line); border-radius: 12px;
@@ -199,6 +216,20 @@ legend { font-weight: 700; color: var(--clay); padding: 0 .6rem; font-size: 1.05
   <a href="../" target="_blank" rel="noopener">צפייה באתר ↗</a>
 </header>
 
+<!-- מסך סיסמה — הדרך הרגילה להיכנס -->
+<div id="pwscreen">
+  <div class="card">
+    <h2>כניסה לעריכת האתר</h2>
+    <form id="pw-form">
+      <input type="password" id="pw-input" autocomplete="current-password"
+             placeholder="הקלידו את הסיסמה" aria-label="סיסמה">
+      <button class="btn" id="pw-go" type="submit">כניסה</button>
+    </form>
+    <p class="err" id="pw-err"></p>
+    <p class="adv"><a id="pw-adv">חיבור מתקדם (למנהל)</a></p>
+  </div>
+</div>
+
 <!-- מסך התחברות חד־פעמי -->
 <div id="setup">
   <div class="card">
@@ -225,6 +256,10 @@ legend { font-weight: 700; color: var(--clay); padding: 0 .6rem; font-size: 1.05
     </ol>
     <p class="err" id="setup-err"></p>
     <button class="btn" id="connect" type="button">התחברות</button>
+    <p style="margin-top:1.2rem;font-size:.9rem">
+      רוצים שהכניסה תהיה עם סיסמה פשוטה במקום מפתח?
+      <a href="seal.html">להגדרת סיסמה (למנהל) ←</a>
+    </p>
   </div>
 </div>
 
@@ -346,11 +381,31 @@ function b64encBytes(bytes) {
   return btoa(s);
 }
 function b64encText(str) { return b64encBytes(new TextEncoder().encode(str)); }
-function b64decText(b64) {
+function b64decBytes(b64) {
   var bin = atob(b64.replace(/\n/g, ''));
   var bytes = new Uint8Array(bin.length);
   for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return new TextDecoder().decode(bytes);
+  return bytes;
+}
+function b64decText(b64) { return new TextDecoder().decode(b64decBytes(b64)); }
+
+/* ---------- הצפנת המפתח בסיסמה (PBKDF2 + AES-GCM) ---------- */
+
+function deriveKey(password, salt, iterations) {
+  return crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey'])
+    .then(function (km) {
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: iterations, hash: 'SHA-256' },
+        km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    });
+}
+
+/* blob: {v, iter, salt, iv, ct} → הטקסט המקורי; סיסמה שגויה זורקת שגיאה */
+function decryptBlob(blob, password) {
+  var salt = b64decBytes(blob.salt), iv = b64decBytes(blob.iv), ct = b64decBytes(blob.ct);
+  return deriveKey(password, salt, blob.iter || 600000).then(function (key) {
+    return crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ct);
+  }).then(function (buf) { return new TextDecoder().decode(buf); });
 }
 
 /* ---------- GitHub API ---------- */
@@ -380,11 +435,20 @@ function gh(path, opts) {
 function repoPath() { return '/repos/' + CFG.owner + '/' + CFG.repo; }
 
 /* קומיט אחד עם כמה קבצים (Git Data API).
-   changes: [{path, b64}] להוספה/עדכון, [{path, del:true}] למחיקה */
-function commitFiles(changes, message) {
+   changes: [{path, b64}] להוספה/עדכון, [{path, del:true}] למחיקה.
+
+   שמירות רצופות עלולות לקבל מה־API ראש ענף ישן לרגע (השהיית רפליקה),
+   ואז העדכון נכשל עם "not a fast forward". לכן: זוכרים את הקומיט האחרון
+   שיצרנו ומשתמשים בו כהורה אם ה־API מחזיר משהו ישן יותר, ובכל כישלון
+   כזה מנסים שוב עם קריאה טרייה — עד 3 פעמים. */
+var lastHead = null;
+
+function commitFiles(changes, message, attempt) {
+  attempt = attempt || 1;
   var refSha, baseTree;
   return gh(repoPath() + '/git/ref/heads/' + CFG.branch).then(function (ref) {
     refSha = ref.object.sha;
+    if (lastHead && refSha !== lastHead && attempt === 1) refSha = lastHead;
     return gh(repoPath() + '/git/commits/' + refSha);
   }).then(function (commit) {
     baseTree = commit.tree.sha;
@@ -404,7 +468,18 @@ function commitFiles(changes, message) {
   }).then(function (newCommit) {
     return gh(repoPath() + '/git/refs/heads/' + CFG.branch, {
       method: 'PATCH', body: { sha: newCommit.sha }
+    }).then(function (r) {
+      lastHead = newCommit.sha;
+      return r;
     });
+  }).catch(function (e) {
+    var notFF = /fast forward/i.test(e.message || '');
+    if (notFF && attempt < 3) {
+      lastHead = null;
+      return new Promise(function (resolve) { setTimeout(resolve, 900 * attempt); })
+        .then(function () { return commitFiles(changes, message, attempt + 1); });
+    }
+    throw e;
   });
 }
 
@@ -594,19 +669,64 @@ var SAVED_TOAST = 'נשמר ✓ — יופיע באתר תוך דקה־שתיי�
 
 function boot() {
   if (!CFG || !CFG.token) {
-    $('#setup').classList.add('on');
+    /* אין חיבור שמור: אם קיים secret.json מוצפן — מסך סיסמה; אחרת חיבור מתקדם */
+    fetch('secret.json?t=' + Date.now()).then(function (r) {
+      if (!r.ok) throw new Error('no secret');
+      return r.json();
+    }).then(function (blob) {
+      window._secretBlob = blob;
+      $('#pwscreen').classList.add('on');
+      $('#pw-input').focus();
+    }).catch(function () {
+      $('#setup').classList.add('on');
+    });
     return;
   }
   busy('טוען…');
   loadContent().then(function () {
+    $('#pwscreen').classList.remove('on');
+    $('#setup').classList.remove('on');
     $('#app').hidden = false;
     render();
     setDirty(false);
   }).catch(function (e) {
-    $('#setup').classList.add('on');
-    $('#setup-err').textContent = e.message;
+    if (window._secretBlob) {
+      $('#pwscreen').classList.add('on');
+      $('#pw-err').textContent = e.message;
+    } else {
+      $('#setup').classList.add('on');
+      $('#setup-err').textContent = e.message;
+    }
   }).finally(function () { busy(''); });
 }
+
+/* כניסה עם סיסמה: מפענחים את המפתח, בודקים מול גיטהאב ושומרים */
+$('#pw-form').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var pw = $('#pw-input').value;
+  if (!pw) return;
+  var errEl = $('#pw-err');
+  errEl.textContent = '';
+  busy('בודק סיסמה…');
+  decryptBlob(window._secretBlob, pw).then(function (json) {
+    var cfg = JSON.parse(json);
+    CFG = { token: cfg.token, owner: cfg.owner, repo: cfg.repo, branch: cfg.branch || 'main' };
+    return gh(repoPath());
+  }).then(function () {
+    try { localStorage.setItem('shemi-gh', JSON.stringify(CFG)); } catch (e) {}
+    boot();
+  }).catch(function (e) {
+    CFG = null;
+    errEl.textContent = (e.name === 'OperationError' || e instanceof DOMException)
+      ? 'הסיסמה לא נכונה. נסו שוב.'
+      : 'שגיאה: ' + e.message;
+  }).finally(function () { busy(''); });
+});
+
+$('#pw-adv').addEventListener('click', function () {
+  $('#pwscreen').classList.remove('on');
+  $('#setup').classList.add('on');
+});
 
 $('#connect').addEventListener('click', function () {
   var cfg = {
@@ -824,7 +944,8 @@ window.addEventListener('beforeunload', function (e) {
 });
 
 /* חשוף לבדיקות */
-window._test = { resizeImage: resizeImage, b64encText: b64encText, b64decText: b64decText };
+window._test = { resizeImage: resizeImage, b64encText: b64encText, b64decText: b64decText,
+                 decryptBlob: decryptBlob, b64encBytes: b64encBytes };
 
 boot();
 </script>
