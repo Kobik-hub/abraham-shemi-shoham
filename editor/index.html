@@ -254,7 +254,7 @@ legend { font-weight: 700; color: var(--clay); padding: 0 .6rem; font-size: 1.05
       <button class="btn" id="pw-go" type="submit">כניסה</button>
     </form>
     <p class="err" id="pw-err"></p>
-    <p class="adv"><a id="pw-adv">חיבור מתקדם (למנהל)</a></p>
+    <p class="adv"><a href="../guide.pdf" target="_blank" rel="noopener" style="color:var(--clay);font-weight:700;font-size:1rem">המדריך המלא להדפסה (PDF)</a> &nbsp;·&nbsp; <a id="pw-adv">חיבור מתקדם (למנהל)</a></p>
   </div>
 </div>
 
@@ -716,6 +716,24 @@ var SAVED_TOAST = 'נשמר ✓ — יופיע באתר תוך דקה־שתיי�
 /* ---------- אתחול ---------- */
 
 function boot() {
+  /* מצב הדגמה מקומי (לצילומי מסך למדריך): ?demo=1 — רק ב־localhost */
+  var q = new URLSearchParams(location.search);
+  if (q.get('demo') === '1' &&
+      (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+    fetch('../content.js').then(function (r) { return r.text(); }).then(function (raw) {
+      STATE = JSON.parse(raw.match(/\/\*JSON-START\*\/([\s\S]*)\/\*JSON-END\*\//)[1]);
+      (q.get('open') || '').split(',').forEach(function (id) { if (id) openGals[id] = 1; });
+      $('#app').hidden = false;
+      render();
+      var tab = q.get('tab');
+      if (tab) {
+        $$('.tab').forEach(function (t) { if (t.dataset.panel === tab) t.click(); });
+      }
+      setDirty(q.get('dirty') === '1');
+    });
+    return;
+  }
+
   if (!CFG || !CFG.token) {
     /* אין חיבור שמור: אם קיים secret.json מוצפן — מסך סיסמה; אחרת חיבור מתקדם */
     fetch('secret.json?t=' + Date.now()).then(function (r) {
