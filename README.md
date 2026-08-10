@@ -2,8 +2,8 @@
 
 אתר סטטי + עורך תוכן, מתארחים בחינם ב־GitHub Pages.
 
-- **האתר**: `https://<username>.github.io/shemi-shoham/`
-- **העורך**: `https://<username>.github.io/shemi-shoham/editor/`
+- **האתר**: https://kobik-hub.github.io/abraham-shemi-shoham/
+- **העורך**: https://kobik-hub.github.io/abraham-shemi-shoham/editor/
 
 ## איך העריכה עובדת
 
