@@ -252,13 +252,6 @@ window.CONTENT = /*JSON-START*/{
    "short": "אקוורלים",
    "blurb": "עבודות מים קלות ומהירות: נגנים, נופים ופרחים.",
    "cover": "watercolors/yafo.jpg"
-  },
-  {
-   "id": "gmsmwkfwb",
-   "name": "בדיקה",
-   "short": "בדיקה",
-   "blurb": "",
-   "cover": "gmsmwkfwb/wallpaper.jpg"
   }
  ],
  "works": [
@@ -863,20 +856,6 @@ window.CONTENT = /*JSON-START*/{
    "t": "אקוורל",
    "w": 601,
    "h": 522
-  },
-  {
-   "s": "gmsmwkfwb",
-   "f": "wallpaper.jpg",
-   "t": "Wallpaper",
-   "w": 1600,
-   "h": 900
-  },
-  {
-   "s": "gmsmwkfwb",
-   "f": "wallpaper-2.jpg",
-   "t": "Wallpaper",
-   "w": 1600,
-   "h": 900
   }
  ]
 }/*JSON-END*/;
