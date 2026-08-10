@@ -242,8 +242,11 @@ legend { font-weight: 700; color: var(--clay); padding: 0 .6rem; font-size: 1.05
     <h2>חיבור ראשוני</h2>
     <p>כדי שהעורך יוכל לשמור שינויים, צריך להדביק כאן מפתח גישה — פעם אחת בלבד במחשב הזה.</p>
     <ol>
-      <li><a id="tokenlink" href="https://github.com/settings/tokens/new?scopes=repo&description=shemi-editor" target="_blank" rel="noopener">פתחו את דף יצירת המפתח בגיטהאב ←</a><br>
-        למטה בדף לוחצים על הכפתור הירוק <b>Generate token</b>, ומעתיקים את המפתח שמתחיל ב־<code dir="ltr">ghp_</code>.</li>
+      <li><a id="tokenlink" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">פתחו את דף יצירת המפתח בגיטהאב (Fine-grained) ←</a><br>
+        בדף שנפתח: Repository access → <b>Only select repositories</b> → בוחרים את
+        <code>abraham-shemi-shoham</code> → Permissions → Repository permissions →
+        <b>Contents: Read and write</b> → הכפתור הירוק <b>Generate token</b> —
+        ומעתיקים את המפתח שמתחיל ב־<code dir="ltr">github_pat_</code>.</li>
       <li>
         <label>הדביקו את המפתח כאן:
           <input type="password" id="cfg-token" dir="ltr" autocomplete="off" placeholder="ghp_...">

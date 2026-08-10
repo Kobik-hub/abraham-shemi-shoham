@@ -62,7 +62,13 @@ code { background: #fff; border: 1px solid var(--line); border-radius: 5px; padd
     <label>מפתח הגישה (Token) מגיטהאב
       <input type="password" id="token" dir="ltr" autocomplete="off" placeholder="ghp_... או github_pat_...">
     </label>
-    <small>עדיף מפתח Fine-grained שמוגבל למאגר הזה בלבד, עם הרשאת Contents: Read and write.</small>
+    <small>
+      אין מפתח? <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">יוצרים כאן (Fine-grained) ←</a><br>
+      בדף שנפתח: שם חופשי → Expiration: התאריך הרחוק ביותר → Repository access:
+      <b>Only select repositories</b> → בוחרים את <code>abraham-shemi-shoham</code> →
+      Permissions → Repository permissions → <b>Contents: Read and write</b> →
+      Generate token. המפתח שמתקבל מתחיל ב־<code dir="ltr">github_pat_</code>.
+    </small>
 
     <label>בחרו סיסמה פשוטה לאמן
       <input type="text" id="pw1" autocomplete="off" placeholder="למשל: ציור בצבע חמרה 7">
