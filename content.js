@@ -870,13 +870,6 @@ window.CONTENT = /*JSON-START*/{
    "t": "Wallpaper",
    "w": 1600,
    "h": 900
-  },
-  {
-   "s": "gmsmwkfwb",
-   "f": "wallpaper-2.jpg",
-   "t": "Wallpaper",
-   "w": 1600,
-   "h": 900
   }
  ]
 }/*JSON-END*/;
