@@ -35,6 +35,11 @@ input, textarea { font: inherit; color: var(--ink); }
   color: #fff; background: var(--ok); text-decoration: none; font-weight: 700;
   padding: .55rem 1.2rem; border-radius: 8px;
 }
+#logout {
+  border: 2px solid var(--line); background: transparent; color: var(--muted);
+  padding: .45rem 1rem; border-radius: 8px; font-weight: 700; font-size: .9rem;
+}
+#logout:hover { border-color: var(--danger); color: var(--danger); }
 
 .tabs { display: flex; gap: .6rem; padding: 1.1rem 1.2rem 0; flex-wrap: wrap; }
 .tab {
@@ -213,6 +218,7 @@ legend { font-weight: 700; color: var(--clay); padding: 0 .6rem; font-size: 1.05
 <header class="top">
   <h1>עריכת האתר · אברהם שמי־שהם</h1>
   <span class="spacer"></span>
+  <button id="logout" type="button" hidden>התנתקות</button>
   <a href="../" target="_blank" rel="noopener">צפייה באתר ↗</a>
 </header>
 
@@ -687,6 +693,7 @@ function boot() {
     $('#pwscreen').classList.remove('on');
     $('#setup').classList.remove('on');
     $('#app').hidden = false;
+    $('#logout').hidden = false;
     render();
     setDirty(false);
   }).catch(function (e) {
@@ -726,6 +733,24 @@ $('#pw-form').addEventListener('submit', function (ev) {
 $('#pw-adv').addEventListener('click', function () {
   $('#pwscreen').classList.remove('on');
   $('#setup').classList.add('on');
+});
+
+/* התנתקות: מוחק את החיבור השמור וחוזר למסך הכניסה */
+$('#logout').addEventListener('click', function () {
+  var msg = dirty
+    ? 'יש שינויים שלא נשמרו — הם יאבדו. להתנתק בכל זאת?'
+    : 'להתנתק מהעורך? בכניסה הבאה תידרש שוב סיסמה.';
+  if (!confirm(msg)) return;
+  try { localStorage.removeItem('shemi-gh'); } catch (e) {}
+  CFG = null;
+  window._secretBlob = null;
+  dirty = false;
+  $('#app').hidden = true;
+  $('#logout').hidden = true;
+  $('#pw-input').value = '';
+  $('#pw-err').textContent = '';
+  $('#setup-err').textContent = '';
+  boot();
 });
 
 $('#connect').addEventListener('click', function () {
