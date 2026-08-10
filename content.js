@@ -258,7 +258,7 @@ window.CONTENT = /*JSON-START*/{
    "name": "בדיקה",
    "short": "בדיקה",
    "blurb": "",
-   "cover": ""
+   "cover": "gmsmwkfwb/wallpaper.jpg"
   }
  ],
  "works": [
@@ -863,6 +863,13 @@ window.CONTENT = /*JSON-START*/{
    "t": "אקוורל",
    "w": 601,
    "h": 522
+  },
+  {
+   "s": "gmsmwkfwb",
+   "f": "wallpaper.jpg",
+   "t": "Wallpaper",
+   "w": 1600,
+   "h": 900
   }
  ]
 }/*JSON-END*/;
